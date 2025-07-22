@@ -176,30 +176,35 @@ namespace WiFiAnalyzer
                 wlanInterface.Scan();
                 System.Threading.Thread.Sleep(3000); // スキャン完了を待つ
                 
-                var availableNetworks = wlanInterface.GetAvailableNetworkList(0);
+                // BSS（Base Station）リストを取得してBSSIDを含む詳細情報を取得
+                var bssEntries = wlanInterface.GetNetworkBssList();
                 var networkList = new List<NetworkInfo>();
                 
-                foreach (var network in availableNetworks)
+                foreach (var bss in bssEntries)
                 {
                     var networkInfo = new NetworkInfo
                     {
-                        SSID = GetStringForSSID(network.dot11Ssid),
-                        BSSID = "N/A", // NativeWifiライブラリでは直接取得困難
-                        SignalQuality = (int)network.wlanSignalQuality,
-                        RSSI = ConvertSignalQualityToRSSI(network.wlanSignalQuality),
-                        Channel = "N/A", // 追加の処理が必要
-                        Security = network.dot11DefaultAuthAlgorithm.ToString()
+                        SSID = GetStringForSSID(bss.dot11Ssid),
+                        BSSID = FormatMacAddress(bss.dot11Bssid),
+                        SignalQuality = (int)bss.linkQuality,
+                        RSSI = bss.rssi,
+                        Channel = GetChannelFromFrequency(bss.chCenterFrequency),
+                        Security = bss.dot11BssType.ToString()
                     };
                     networkList.Add(networkInfo);
                 }
                 
-                // 信号強度でソート
-                networkList = networkList.OrderByDescending(n => n.SignalQuality).ToList();
+                // 重複するSSIDをグループ化し、最も強い信号のBSSIDを選択
+                var uniqueNetworks = networkList
+                    .GroupBy(n => n.SSID)
+                    .Select(g => g.OrderByDescending(n => n.SignalQuality).First())
+                    .OrderByDescending(n => n.SignalQuality)
+                    .ToList();
                 
                 // UIスレッドでDataGridViewを更新
                 this.Invoke(new Action(() =>
                 {
-                    foreach (var network in networkList)
+                    foreach (var network in uniqueNetworks)
                     {
                         networksDataGridView.Rows.Add(
                             string.IsNullOrEmpty(network.SSID) ? "(Hidden)" : network.SSID,
@@ -220,6 +225,32 @@ namespace WiFiAnalyzer
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }));
             }
+        }
+        
+        private string FormatMacAddress(byte[] macAddress)
+        {
+            if (macAddress == null || macAddress.Length != 6)
+                return "N/A";
+            
+            return string.Join(":", macAddress.Select(b => b.ToString("X2")));
+        }
+        
+        private string GetChannelFromFrequency(uint frequency)
+        {
+            // 2.4GHz帯の場合
+            if (frequency >= 2412 && frequency <= 2484)
+            {
+                if (frequency == 2484)
+                    return "14";
+                return ((frequency - 2412) / 5 + 1).ToString();
+            }
+            // 5GHz帯の場合（簡略化）
+            else if (frequency >= 5170 && frequency <= 5825)
+            {
+                return ((frequency - 5000) / 5).ToString();
+            }
+            
+            return "N/A";
         }
         
         private string GetStringForSSID(Wlan.Dot11Ssid ssid)
