@@ -292,9 +292,9 @@ namespace WiFiAnalyzer
                     var currentBss = bssEntries.FirstOrDefault(b => 
                         GetStringForSSID(b.dot11Ssid) == connectedProfile.profileName);
                     
-                    if (currentBss != null)
+                    if (currentBss.HasValue)
                     {
-                        currentRSSILabel.Text = $"RSSI: {currentBss.rssi} dBm";
+                        currentRSSILabel.Text = $"RSSI: {currentBss.Value.rssi} dBm";
                     }
                     else
                     {
@@ -354,16 +354,32 @@ namespace WiFiAnalyzer
                     var currentBss = bssEntries.FirstOrDefault(b => 
                         GetStringForSSID(b.dot11Ssid) == connectedProfile.profileName);
                     
-                    if (currentBss != null)
+                    if (currentBss.HasValue)
                     {
+                        var bssValue = currentBss.Value;
                         var networkInfo = new NetworkInfo
                         {
                             SSID = connectedProfile.profileName,
-                            BSSID = FormatMacAddress(currentBss.dot11Bssid),
-                            SignalQuality = (int)currentBss.linkQuality,
-                            RSSI = currentBss.rssi,
-                            Channel = GetChannelFromFrequency(currentBss.chCenterFrequency),
-                            Security = currentBss.dot11BssType.ToString()
+                            BSSID = FormatMacAddress(bssValue.dot11Bssid),
+                            SignalQuality = (int)bssValue.linkQuality,
+                            RSSI = bssValue.rssi,
+                            Channel = GetChannelFromFrequency(bssValue.chCenterFrequency),
+                            Security = bssValue.dot11BssType.ToString()
+                        };
+                        
+                        this.Invoke(new Action(() => UpdateDetailPanel(networkInfo)));
+                    }
+                    else
+                    {
+                        // 現在接続中のBSSが見つからない場合のデフォルト情報
+                        var networkInfo = new NetworkInfo
+                        {
+                            SSID = connectedProfile.profileName,
+                            BSSID = "取得できませんでした",
+                            SignalQuality = 0,
+                            RSSI = -100,
+                            Channel = "不明",
+                            Security = "不明"
                         };
                         
                         this.Invoke(new Action(() => UpdateDetailPanel(networkInfo)));
