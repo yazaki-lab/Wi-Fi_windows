@@ -287,16 +287,23 @@ namespace WiFiAnalyzer
                     var connectedProfile = wlanInterface.CurrentConnection;
                     currentSSIDLabel.Text = $"現在のSSID: {connectedProfile.profileName}";
                     
-                    // 現在の接続のRSSIを取得（近似値）
-                    var bssEntries = wlanInterface.GetNetworkBssList();
-                    var currentBss = bssEntries.FirstOrDefault(b => 
-                        GetStringForSSID(b.dot11Ssid) == connectedProfile.profileName);
-                    
-                    if (currentBss.HasValue)
+                    try
                     {
-                        currentRSSILabel.Text = $"RSSI: {currentBss.Value.rssi} dBm";
+                        // 現在の接続のRSSIを取得（近似値）
+                        var bssEntries = wlanInterface.GetNetworkBssList();
+                        var currentBss = bssEntries.Where(b => 
+                            GetStringForSSID(b.dot11Ssid) == connectedProfile.profileName).FirstOrDefault();
+                        
+                        if (bssEntries.Any(b => GetStringForSSID(b.dot11Ssid) == connectedProfile.profileName))
+                        {
+                            currentRSSILabel.Text = $"RSSI: {currentBss.rssi} dBm";
+                        }
+                        else
+                        {
+                            currentRSSILabel.Text = "RSSI: 取得中...";
+                        }
                     }
-                    else
+                    catch
                     {
                         currentRSSILabel.Text = "RSSI: 取得中...";
                     }
@@ -351,20 +358,20 @@ namespace WiFiAnalyzer
                     System.Threading.Thread.Sleep(2000);
                     
                     var bssEntries = wlanInterface.GetNetworkBssList();
-                    var currentBss = bssEntries.FirstOrDefault(b => 
-                        GetStringForSSID(b.dot11Ssid) == connectedProfile.profileName);
+                    var matchingBss = bssEntries.Where(b => 
+                        GetStringForSSID(b.dot11Ssid) == connectedProfile.profileName).ToList();
                     
-                    if (currentBss.HasValue)
+                    if (matchingBss.Any())
                     {
-                        var bssValue = currentBss.Value;
+                        var currentBss = matchingBss.First();
                         var networkInfo = new NetworkInfo
                         {
                             SSID = connectedProfile.profileName,
-                            BSSID = FormatMacAddress(bssValue.dot11Bssid),
-                            SignalQuality = (int)bssValue.linkQuality,
-                            RSSI = bssValue.rssi,
-                            Channel = GetChannelFromFrequency(bssValue.chCenterFrequency),
-                            Security = bssValue.dot11BssType.ToString()
+                            BSSID = FormatMacAddress(currentBss.dot11Bssid),
+                            SignalQuality = (int)currentBss.linkQuality,
+                            RSSI = currentBss.rssi,
+                            Channel = GetChannelFromFrequency(currentBss.chCenterFrequency),
+                            Security = currentBss.dot11BssType.ToString()
                         };
                         
                         this.Invoke(new Action(() => UpdateDetailPanel(networkInfo)));
