@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "m9dXqSAmioc=",
+  "dgSpecHash": "BybDo6WVBqs=",
   "success": true,
-  "projectFilePath": "C:\\Users\\kamikawa1218\\Documents\\WifiAnalyzerApp\\WifiAnalyzerApp.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\kamikawa1218\\Documents\\Wi-Fi_windows\\WifiAnalyzerApp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\kamikawa1218\\.nuget\\packages\\managednativewifi\\3.0.2\\managednativewifi.3.0.2.nupkg.sha512"
+  ],
   "logs": []
 }

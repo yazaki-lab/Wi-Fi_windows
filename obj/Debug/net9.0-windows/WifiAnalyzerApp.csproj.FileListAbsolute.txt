@@ -1,0 +1,6 @@
+C:\Users\kamikawa1218\Documents\Wi-Fi_windows\obj\Debug\net9.0-windows\WifiAnalyzerApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kamikawa1218\Documents\Wi-Fi_windows\obj\Debug\net9.0-windows\WifiAnalyzerApp.AssemblyInfoInputs.cache
+C:\Users\kamikawa1218\Documents\Wi-Fi_windows\obj\Debug\net9.0-windows\WifiAnalyzerApp.AssemblyInfo.cs
+C:\Users\kamikawa1218\Documents\Wi-Fi_windows\obj\Debug\net9.0-windows\WifiAnalyzerApp.csproj.CoreCompileInputs.cache
+C:\Users\kamikawa1218\Documents\Wi-Fi_windows\obj\Debug\net9.0-windows\WifiAnalyzerApp.sourcelink.json
+C:\Users\kamikawa1218\Documents\Wi-Fi_windows\obj\Debug\net9.0-windows\WifiAnalyzerApp.csproj.AssemblyReference.cache

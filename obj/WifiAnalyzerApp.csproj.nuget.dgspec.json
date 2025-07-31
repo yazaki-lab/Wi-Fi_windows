@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\kamikawa1218\\Documents\\WifiAnalyzerApp\\WifiAnalyzerApp.csproj": {}
+    "C:\\Users\\kamikawa1218\\Documents\\Wi-Fi_windows\\WifiAnalyzerApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\kamikawa1218\\Documents\\WifiAnalyzerApp\\WifiAnalyzerApp.csproj": {
+    "C:\\Users\\kamikawa1218\\Documents\\Wi-Fi_windows\\WifiAnalyzerApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kamikawa1218\\Documents\\WifiAnalyzerApp\\WifiAnalyzerApp.csproj",
+        "projectUniqueName": "C:\\Users\\kamikawa1218\\Documents\\Wi-Fi_windows\\WifiAnalyzerApp.csproj",
         "projectName": "WifiAnalyzerApp",
-        "projectPath": "C:\\Users\\kamikawa1218\\Documents\\WifiAnalyzerApp\\WifiAnalyzerApp.csproj",
+        "projectPath": "C:\\Users\\kamikawa1218\\Documents\\Wi-Fi_windows\\WifiAnalyzerApp.csproj",
         "packagesPath": "C:\\Users\\kamikawa1218\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\kamikawa1218\\Documents\\WifiAnalyzerApp\\obj\\",
+        "outputPath": "C:\\Users\\kamikawa1218\\Documents\\Wi-Fi_windows\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\kamikawa1218\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -43,6 +43,12 @@
       "frameworks": {
         "net9.0-windows7.0": {
           "targetAlias": "net9.0-windows",
+          "dependencies": {
+            "ManagedNativeWifi": {
+              "target": "Package",
+              "version": "[3.0.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
